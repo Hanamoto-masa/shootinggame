@@ -32,7 +32,10 @@ vcan.height = FIELD_H;
 let camera_x = 0;
 let camera_y = 0;
 
+// 星の実体
+let star = [];
 
+// 整数のランダムを作る
 function rand(min,max){
   return Math.floor(Math.random()*(max-min+1))+min;
 }
@@ -68,11 +71,13 @@ class Star{
   }
 }
 
-let star = [];
+
+
+// function gameInit(){
+//   for(let i = 0;i<STAR_MAX;i++)star[i] = new Star();
+//   setInterval(gameLoop,GAME_SPEED);
+// }
 for(let i = 0;i<STAR_MAX;i++)star[i] = new Star();
-
-
-
 setInterval(gameLoop,GAME_SPEED);
 
 // ゲームループ
@@ -91,4 +96,9 @@ function gameLoop(){
   con.drawImage(vcan,camera_x,camera_y,SCREEN_W,SCREEN_H,
     0,0,CANVAS_W,CANVAS_H);
 
+}
+
+// オンロードでゲーム開始
+window.onload = function(){
+  gameInit();
 }
