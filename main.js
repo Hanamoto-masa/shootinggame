@@ -35,6 +35,45 @@ let camera_y = 0;
 // 星の実体
 let star = [];
 
+// キーボードの状態
+let key = [];
+
+// キーボードが押されたとき
+document.onkeydown = function(e){
+  key[e.keyCode] = true;
+}
+
+// キーボードが離されたとき
+document.onkeyup = function(e){
+  key[e.keyCode] = false;
+}
+
+
+// 自機のクラス
+class Jiki{
+  constructor(){
+    this.x = (FIELD_W/2)<<8;
+    this.y = (FIELD_H/2)<<8;
+    this.speed = 512;
+    this.anime = 1;
+  }
+// 自機の移動
+  update(){
+    if(key[37] && this.x>this.speed)this.x-=this.speed;
+    if(key[38] && this.y>this.speed)this.y-=this.speed;
+    if(key[39] && this.x<=(FIELD_W<<8)-this.speed)
+    this.x+=this.speed;
+    if(key[40] && this.y<=(FIELD_H<<8)-this.speed)
+    this.y+=this.speed;
+  }
+// 自機の描画
+  draw(){
+    drawSprite(-1 + this.anime,this.x,this.y);
+  }
+}
+
+let jiki = new Jiki();
+
 // ファイルを読み込み
 let spriteImage = new Image();
 spriteImage.src = "sprite.png";
@@ -120,14 +159,20 @@ function gameLoop(){
 
   // 移動の処理
   for(let i = 0;i<STAR_MAX;i++)star[i].update();
+  jiki.update();
 
   // 　描画の処理
   vcon.fillStyle = "black";
-  vcon.fillRect(0,0,SCREEN_W,SCREEN_H);
+  vcon.fillRect(camera_x,camera_y,SCREEN_W,SCREEN_H);
 
   for(let i = 0;i<STAR_MAX;i++)star[i].draw();
+  jiki.draw();
 
-  drawSprite(0,100<<8,100<<8);
+  // 自機の範囲　0~FIELD_W
+  // カメラの範囲　0~(FIELD_W-SCREEN_W)
+
+  camera_x = (jiki.x>>8)/FIELD_W * (FIELD_W-SCREEN_W)
+  camera_y = (jiki.x>>8)/FIELD_H * (FIELD_H-SCREEN_H)
 
   // 仮想画面から実際のキャンバスにコピー
   con.drawImage(vcan,camera_x,camera_y,SCREEN_W,SCREEN_H,
