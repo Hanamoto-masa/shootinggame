@@ -35,7 +35,44 @@ let camera_y = 0;
 // 星の実体
 let star = [];
 
-// 整数のランダムを作る
+// ファイルを読み込み
+let spriteImage = new Image();
+spriteImage.src = "sprite.png";
+
+// スプライトクラス
+class Sprite{
+  constructor(x,y,w,h){
+    this.x = x;
+    this.y = y;
+    this.w = w;
+    this.h = h;
+  }
+}
+
+// スプライト
+let sprite = [
+  new Sprite(2,0,60,61),
+  new Sprite(77,0,47,60),
+  new Sprite(134,0,45,64),
+];
+
+// スプライトの描画
+function drawSprite(snum,x,y){
+  let sx = sprite[snum].x;
+  let sy = sprite[snum].y;
+  let sw = sprite[snum].w;
+  let sh = sprite[snum].h;
+
+  let px = (x>>8) - sw/2;
+  let py = (y>>8) - sh/2;
+
+  if(px+sw/2<camera_x || px-sw/2>=camera_x+SCREEN_W
+    ||py+sh/2<camera_y || py-sh/2>=camera_x+SCREEN_H)return;
+
+  vcon.drawImage(spriteImage,sx,sy,sw,sh,px,py,sw,sh);
+}
+
+// 整数のランダムを作るr
 function rand(min,max){
   return Math.floor(Math.random()*(max-min+1))+min;
 }
@@ -89,6 +126,8 @@ function gameLoop(){
   vcon.fillRect(0,0,SCREEN_W,SCREEN_H);
 
   for(let i = 0;i<STAR_MAX;i++)star[i].draw();
+
+  drawSprite(0,100<<8,100<<8);
 
   // 仮想画面から実際のキャンバスにコピー
   con.drawImage(vcan,camera_x,camera_y,SCREEN_W,SCREEN_H,
